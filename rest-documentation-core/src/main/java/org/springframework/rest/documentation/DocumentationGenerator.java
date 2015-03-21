@@ -32,12 +32,16 @@ public class DocumentationGenerator {
 
 	private final ApplicationContext applicationContext;
 
-	private final Javadoc javadoc;
+	private Javadoc javadoc;
 
 	public DocumentationGenerator(ApplicationContext applicationContext, Javadoc javadoc) {
 		this.applicationContext = applicationContext;
 		this.javadoc = javadoc;
 	}
+
+    public void setJavadoc(Javadoc javadoc) {
+        this.javadoc = javadoc;
+    }
 
 	public Documentation generate() {
 		List<Endpoint> endpoints = new EndpointDiscoverer(this.javadoc, this.applicationContext).discoverEndpoints();

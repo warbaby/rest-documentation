@@ -31,24 +31,25 @@ public class RestDocumentationView implements ApplicationContextAware {
 	
 	
 	private volatile DocumentationGenerator documentationGenerator;
+	private Resource resource;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
-		
-		Resource resource = applicationContext.getResource("classpath:javadoc.json");
+
+		resource = applicationContext.getResource("classpath:javadoc.json");
+		this.documentationGenerator = new DocumentationGenerator(applicationContext, null);
+	}
+	
+	public synchronized Documentation getSnapshot() {
 		Javadoc javadoc;
 		try {
 			javadoc = new ObjectMapper().readValue(resource.getInputStream(), Javadoc.class);
 		} catch (Exception e) {
 			throw new FatalBeanException("Failed to load javadoc JSON", e);
 		}
-		
-		this.documentationGenerator = new DocumentationGenerator(applicationContext, javadoc);
-	}
-	
-	public Documentation getSnapshot() {
-		return this.documentationGenerator.generate();		
+		this.documentationGenerator.setJavadoc(javadoc);
+		return this.documentationGenerator.generate();
 	}
 
 }

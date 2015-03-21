@@ -38,6 +38,7 @@ import org.springframework.rest.documentation.model.Endpoint;
 import org.springframework.rest.documentation.model.Outcome;
 import org.springframework.rest.documentation.model.Parameter;
 import org.springframework.rest.documentation.model.ParameterType;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
