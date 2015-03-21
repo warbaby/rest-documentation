@@ -31,11 +31,15 @@ public class ClassDescriptor {
 
 	private final List<MethodDescriptor> methodDescriptors;
 
+    private final List<FieldDescriptor> fieldDescriptors;
+
 	@JsonCreator
 	public ClassDescriptor(@JsonProperty("name") String name,
-			@JsonProperty("methods") List<MethodDescriptor> methods) {
+			@JsonProperty("methods") List<MethodDescriptor> methods,
+            @JsonProperty("fields") List<FieldDescriptor> fields) {
 		this.name = name;
 		this.methodDescriptors = methods;
+        this.fieldDescriptors = fields;
 	}
 
 	public String getName() {
@@ -44,6 +48,17 @@ public class ClassDescriptor {
 
 	public List<MethodDescriptor> getMethodDescriptors() {
 		return this.methodDescriptors;
+	}
+
+	public List<FieldDescriptor> getFieldDescriptors() {
+		return fieldDescriptors;
+	}
+
+	public FieldDescriptor getFieldDescriptor(String name) {
+		for(FieldDescriptor fieldDescriptor : fieldDescriptors) {
+			if(name.equals(fieldDescriptor.getName())) return fieldDescriptor;
+		}
+		return null;
 	}
 
 	public MethodDescriptor getMethodDescriptor(Method method) {

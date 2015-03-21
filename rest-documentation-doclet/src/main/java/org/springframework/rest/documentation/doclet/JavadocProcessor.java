@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.rest.documentation.javadoc.ClassDescriptor;
+import org.springframework.rest.documentation.javadoc.FieldDescriptor;
 import org.springframework.rest.documentation.javadoc.Javadoc;
 import org.springframework.rest.documentation.javadoc.MethodDescriptor;
 import org.springframework.rest.documentation.javadoc.ParameterDescriptor;
 import org.springframework.rest.documentation.javadoc.ThrowsDescriptor;
 
+import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.ParamTag;
@@ -52,7 +54,12 @@ public final class JavadocProcessor {
 			methodDescriptors.add(processMethod(methodDoc));
 		}
 
-		return new ClassDescriptor(getClassName(classDoc), methodDescriptors);
+        List<FieldDescriptor> fieldDescriptors = new ArrayList<FieldDescriptor>();
+        for(FieldDoc fieldDoc : classDoc.fields(false)) {
+            fieldDescriptors.add(processField(fieldDoc));
+        }
+
+		return new ClassDescriptor(getClassName(classDoc), methodDescriptors, fieldDescriptors);
 	}
 
 	private String getClassName(ClassDoc classDoc) {
@@ -87,6 +94,27 @@ public final class JavadocProcessor {
 		return new MethodDescriptor(methodDoc.name(), getClassName(methodDoc.returnType()), summary, description, parameterDescriptors,
 				throwsDescriptors);
 	}
+
+    private FieldDescriptor processField(FieldDoc fieldDoc) {
+        String commentText = fieldDoc.commentText();
+
+        int periodIndex = commentText.indexOf('.');
+
+        String summary;
+        String description;
+
+        if (periodIndex >= 0) {
+            summary = commentText.substring(0, periodIndex);
+            description = commentText.substring(periodIndex + 1);
+        } else {
+            summary = commentText;
+            description = "";
+        }
+
+        String type = getClassName(fieldDoc.type());
+
+        return new FieldDescriptor(fieldDoc.name(), type, summary, description);
+    }
 
 	private String getClassName(Type type) {
 		ClassDoc classDoc = type.asClassDoc();
@@ -123,8 +151,10 @@ public final class JavadocProcessor {
 		List<ThrowsDescriptor> throwsDescriptors = new ArrayList<ThrowsDescriptor>();
 
 		for (ThrowsTag throwsTag : methodDoc.throwsTags()) {
+            /* TODO: implement this
 			throwsDescriptors.add(new ThrowsDescriptor(throwsTag.exceptionType()
 					.qualifiedTypeName(), throwsTag.exceptionComment()));
+            */
 		}
 
 		return throwsDescriptors;
