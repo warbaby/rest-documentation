@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/rest-documentation-boot/rest-documentation-boot.iml" filepath="$PROJECT_DIR$/rest-documentation-boot/rest-documentation-boot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rest-documentation-core/rest-documentation-core.iml" filepath="$PROJECT_DIR$/rest-documentation-core/rest-documentation-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rest-documentation-doclet/rest-documentation-doclet.iml" filepath="$PROJECT_DIR$/rest-documentation-doclet/rest-documentation-doclet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rest-documentation-example/test-spring-boot-web.iml" filepath="$PROJECT_DIR$/rest-documentation-example/test-spring-boot-web.iml" />
+    </modules>
+  </component>
+</project>
