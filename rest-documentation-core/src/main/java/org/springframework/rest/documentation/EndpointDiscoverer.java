@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -55,7 +55,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  */
 public class EndpointDiscoverer {
 
-	private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
+	/* use LocalVariableTableParameterNameDiscoverer instead of Default for spring 3 */
+	private final ParameterNameDiscoverer parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer(); //new DefaultParameterNameDiscoverer();
 
 	private final Javadoc javadoc;
 
@@ -82,7 +83,8 @@ public class EndpointDiscoverer {
 			HandlerMethod handlerMethod = entry.getValue();
 			if (shouldBeDocumented(handlerMethod)) {
 				RequestMappingInfo requestMappingInfo = entry.getKey();
-				endpoints.add(createEndpoint(handlerMethod, requestMappingInfo, this.javadoc));
+				Endpoint endpoint = createEndpoint(handlerMethod, requestMappingInfo, this.javadoc);
+				if(endpoint!=null) endpoints.add(endpoint);
 			}
 		}
 
@@ -115,6 +117,8 @@ public class EndpointDiscoverer {
 
 		ClassDescriptor classDescriptor = api.getClassDescriptor(clazz);
 
+		if(classDescriptor == null) return null;
+
 		MethodDescriptor methodDescriptor = classDescriptor
 				.getMethodDescriptor(handlerMethod.getMethod());
 
@@ -126,7 +130,7 @@ public class EndpointDiscoverer {
 
 		String returnTypeClass;
 
-		if (returnType instanceof ParameterizedType) {
+		while(returnType instanceof ParameterizedType) {
 			returnType =  ((ParameterizedType) returnType).getActualTypeArguments()[0];
 		}
 
@@ -226,9 +230,12 @@ public class EndpointDiscoverer {
 	}
 
 	private RequestMethod getHttpMethod(RequestMappingInfo requestMappingInfo) {
-		Assert.state(requestMappingInfo.getMethodsCondition().getMethods().size() == 1,
-				"A single HTTP request method is required");
-		return requestMappingInfo.getMethodsCondition().getMethods().iterator().next();
+		//Assert.state(requestMappingInfo.getMethodsCondition().getMethods().size() == 1,
+		//		"A single HTTP request method is required");
+        if(requestMappingInfo.getMethodsCondition().getMethods().size() == 1) 
+		    return requestMappingInfo.getMethodsCondition().getMethods().iterator().next();
+        else
+            return RequestMethod.GET;
 	}
 
 	private Outcome createOutcome(Class<? extends Exception> exceptionClass,

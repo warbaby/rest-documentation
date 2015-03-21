@@ -16,9 +16,8 @@
 
 package org.springframework.rest.documentation.doclet;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 
 import org.springframework.rest.documentation.javadoc.Javadoc;
 
@@ -44,8 +43,8 @@ public class RestDoclet {
 		}
 		
 		File file = new File(outputDirectory, "javadoc.json");
-		
-		FileWriter writer = new FileWriter(file);
+
+		OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8"));
 
 		JsonGenerator generator = new JsonFactory(new ObjectMapper()).createGenerator(
 				writer).useDefaultPrettyPrinter();
