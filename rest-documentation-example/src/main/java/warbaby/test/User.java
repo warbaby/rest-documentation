@@ -9,8 +9,11 @@ public class User {
     /** 你好111 */ 
     private Long id;
     private String name;
-    //private int age;
-    //private boolean male;
+    private int age;
+    /** 看不见我看不见我 */
+    private short invisible;
+    private boolean male;
+    private Address address;
 
     public Long getId() {
         return id;
@@ -21,7 +24,6 @@ public class User {
         this.id = id;
     }
 
-/*
     public int getAge() {
         return age;
     }
@@ -37,7 +39,6 @@ public class User {
     public void setMale(boolean male) {
         this.male = male;
     }
-*/
 
 
     public String getName() {
@@ -46,6 +47,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     @Override
