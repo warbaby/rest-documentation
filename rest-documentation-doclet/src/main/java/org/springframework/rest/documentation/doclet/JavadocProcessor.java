@@ -78,7 +78,8 @@ public final class JavadocProcessor {
 
 		String commentText = methodDoc.commentText();
 
-		int periodIndex = commentText.indexOf('.');
+		int periodIndex = commentText.indexOf('。');
+		if (periodIndex < 0) periodIndex = commentText.indexOf('.');
 
 		String summary;
 		String description;

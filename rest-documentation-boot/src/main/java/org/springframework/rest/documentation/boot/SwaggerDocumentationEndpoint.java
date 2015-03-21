@@ -210,26 +210,24 @@ public class SwaggerDocumentationEndpoint extends AbstractEndpoint<Documentation
 
                 BasicBeanDescription descriptor = introspector.forSerialization(this.objectMapper.getSerializationConfig(), TypeFactory.defaultInstance().constructType(clazz), this.objectMapper.getSerializationConfig());
 
-                //TODO: 不认private的
                 for (BeanPropertyDefinition property : descriptor.findProperties()) {
                     String propertyName = property.getName();
 
-                    //属性上的注释优先
                     FieldDescriptor fieldDescriptor = classDescriptor.getFieldDescriptor(propertyName);
-                    if(fieldDescriptor == null) {
-                        System.err.println("No field descriptor " + propertyName);
+                    AnnotatedMember accessor = property.getAccessor();
+                    MethodDescriptor methodDescriptor = accessor == null ? null : classDescriptor.getMethodDescriptor((Method) accessor.getAnnotated());
+                    if(fieldDescriptor == null && methodDescriptor == null) {
+                        System.err.println("No field and method descriptor in javadoc" + propertyName);
                     }
-                    if ( fieldDescriptor!=null && ((fieldDescriptor.getSummary() != null && !fieldDescriptor.getSummary().isEmpty()) || property.getAccessor() == null)) {
+
+                    //属性上的注释优先, 或者找不到getter或者javadoc里没有getter(lombok)
+                    if ( fieldDescriptor!=null && ((fieldDescriptor.getSummary() != null && !fieldDescriptor.getSummary().isEmpty()) || methodDescriptor == null)) {
                         DocumentationSchema propertySchema = getPropertySchema(responseClasses, documentation, fieldDescriptor.getSummary(), fieldDescriptor.getDescription(), fieldDescriptor.getType());
                         properties.put(propertyName, propertySchema);
-                    } else {
-                        AnnotatedMember accessor = property.getAccessor();
-                        MethodDescriptor methodDescriptor = classDescriptor.getMethodDescriptor((Method) accessor.getAnnotated());
-                        if (methodDescriptor != null) {
-                            String propertyType = methodDescriptor.getReturnType();
-                            DocumentationSchema propertySchema = getPropertySchema(responseClasses, documentation, methodDescriptor.getSummary(), methodDescriptor.getDescription(), propertyType);
-                            properties.put(propertyName, propertySchema);
-                        }
+                    } else if (methodDescriptor != null) {
+                        String propertyType = methodDescriptor.getReturnType();
+                        DocumentationSchema propertySchema = getPropertySchema(responseClasses, documentation, methodDescriptor.getSummary(), methodDescriptor.getDescription(), propertyType);
+                        properties.put(propertyName, propertySchema);
                     }
                 }
 

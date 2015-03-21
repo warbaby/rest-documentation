@@ -16,11 +16,14 @@
 
 package org.springframework.rest.documentation;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.FatalBeanException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.rest.documentation.javadoc.ClassDescriptor;
 import org.springframework.rest.documentation.javadoc.Javadoc;
@@ -34,16 +37,16 @@ public class DocumentationGenerator {
 
 	private Javadoc javadoc;
 
-	public DocumentationGenerator(ApplicationContext applicationContext, Javadoc javadoc) {
+	public DocumentationGenerator(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
-		this.javadoc = javadoc;
 	}
 
-    public void setJavadoc(Javadoc javadoc) {
-        this.javadoc = javadoc;
-    }
-
-	public Documentation generate() {
+	public Documentation generate(InputStream javadocInputStream) {
+		try {
+			this.javadoc = new ObjectMapper().readValue(javadocInputStream, Javadoc.class);
+		} catch (Exception e) {
+			throw new FatalBeanException("Failed to load javadoc JSON", e);
+		}
 		List<Endpoint> endpoints = new EndpointDiscoverer(this.javadoc, this.applicationContext).discoverEndpoints();
 		Map<String, ClassDescriptor> responseClasses = new HashMap<String, ClassDescriptor>();
 

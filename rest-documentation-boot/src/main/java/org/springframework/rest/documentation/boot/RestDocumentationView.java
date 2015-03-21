@@ -27,6 +27,8 @@ import org.springframework.rest.documentation.model.Documentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.InputStream;
+
 public class RestDocumentationView implements ApplicationContextAware {
 	
 	
@@ -38,18 +40,17 @@ public class RestDocumentationView implements ApplicationContextAware {
 			throws BeansException {
 
 		resource = applicationContext.getResource("classpath:javadoc.json");
-		this.documentationGenerator = new DocumentationGenerator(applicationContext, null);
+		this.documentationGenerator = new DocumentationGenerator(applicationContext);
 	}
 	
 	public synchronized Documentation getSnapshot() {
-		Javadoc javadoc;
 		try {
-			javadoc = new ObjectMapper().readValue(resource.getInputStream(), Javadoc.class);
+			InputStream inputStream = resource.getInputStream();
+			return this.documentationGenerator.generate(inputStream);
 		} catch (Exception e) {
-			throw new FatalBeanException("Failed to load javadoc JSON", e);
+			e.printStackTrace();
+			return null;
 		}
-		this.documentationGenerator.setJavadoc(javadoc);
-		return this.documentationGenerator.generate();
 	}
 
 }

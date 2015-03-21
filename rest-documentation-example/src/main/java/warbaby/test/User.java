@@ -14,6 +14,7 @@ public class User {
     private short invisible;
     private boolean male;
     private Address address;
+    private AddressLombok addressLombok;
 
     public Long getId() {
         return id;
@@ -55,6 +56,14 @@ public class User {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public AddressLombok getAddressLombok() {
+        return addressLombok;
+    }
+
+    public void setAddressLombok(AddressLombok addressLombok) {
+        this.addressLombok = addressLombok;
     }
 
     @Override
