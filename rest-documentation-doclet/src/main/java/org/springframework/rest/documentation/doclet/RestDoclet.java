@@ -24,12 +24,17 @@ import org.springframework.rest.documentation.javadoc.Javadoc;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
 
 /**
  * @author awilkinson
  */
 public class RestDoclet {
+
+    public static LanguageVersion languageVersion() {
+        return LanguageVersion.JAVA_1_5;
+    }
 
 	public static boolean start(RootDoc rootDoc) throws IOException {
 

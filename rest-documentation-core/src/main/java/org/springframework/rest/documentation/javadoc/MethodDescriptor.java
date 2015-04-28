@@ -34,6 +34,8 @@ public final class MethodDescriptor {
 
 	private final String description;
 
+    private final String genericType;
+
 	private final List<ParameterDescriptor> parameterDescriptors;
 
 	private final List<ThrowsDescriptor> throwsDescriptors;
@@ -44,11 +46,13 @@ public final class MethodDescriptor {
 			@JsonProperty("returnType") String returnType,
 			@JsonProperty("summary") String summary,
 			@JsonProperty("description") String description,
+            @JsonProperty("genericType") String genericType,
 			@JsonProperty("parameterDescriptors") List<ParameterDescriptor> parameterDescriptors,
 			@JsonProperty("throwsDescriptors") List<ThrowsDescriptor> throwsDescriptors) {
 		this.name = name;
 		this.returnType = returnType;
 		this.summary = summary;
+        this.genericType = genericType;
 		this.description = description;
 		this.parameterDescriptors = parameterDescriptors;
 		this.throwsDescriptors = throwsDescriptors;
@@ -69,6 +73,10 @@ public final class MethodDescriptor {
 	public String getDescription() {
 		return this.description;
 	}
+
+    public String getGenericType() {
+        return genericType;
+    }
 
 	public List<ParameterDescriptor> getParameterDescriptors() {
 		return this.parameterDescriptors;

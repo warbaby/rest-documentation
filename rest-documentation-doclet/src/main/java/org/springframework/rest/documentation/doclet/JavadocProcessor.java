@@ -31,6 +31,7 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Parameter;
+import com.sun.javadoc.ParameterizedType;
 import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.ThrowsTag;
 import com.sun.javadoc.Type;
@@ -92,7 +93,12 @@ public final class JavadocProcessor {
 			description = "";
 		}
 
-		return new MethodDescriptor(methodDoc.name(), getClassName(methodDoc.returnType()), summary, description, parameterDescriptors,
+        ParameterizedType parameterizedType = methodDoc.returnType().asParameterizedType();
+        String genericType = null;
+        if(parameterizedType!=null && parameterizedType.typeArguments().length>0)
+            genericType = getClassName(parameterizedType.typeArguments()[0]);
+
+        return new MethodDescriptor(methodDoc.name(), getClassName(methodDoc.returnType()), summary, description, genericType, parameterDescriptors,
 				throwsDescriptors);
 	}
 
