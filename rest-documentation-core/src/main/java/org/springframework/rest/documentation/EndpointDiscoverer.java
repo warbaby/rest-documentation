@@ -32,6 +32,7 @@ import org.springframework.core.MethodParameter;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.rest.documentation.config.Config;
 import org.springframework.rest.documentation.javadoc.ClassDescriptor;
 import org.springframework.rest.documentation.javadoc.Javadoc;
 import org.springframework.rest.documentation.javadoc.MethodDescriptor;
@@ -43,6 +44,7 @@ import org.springframework.rest.documentation.model.ParameterType;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -108,10 +110,21 @@ public class EndpointDiscoverer {
 	}
 
 	private boolean shouldBeDocumented(HandlerMethod handlerMethod) {
-		return !handlerMethod.getMethod().getDeclaringClass().getName().startsWith("org.springframework");
+		if (handlerMethod.getMethod().getDeclaringClass().getName().startsWith("org.springframework")) return false;
+		//added by warbaby
+		RequestMapping mapping = handlerMethod.getMethodAnnotation(RequestMapping.class);
+		if (mapping != null) {
+			String path = mapping.value()[0];
+			RequestMapping parent = AnnotationUtils.findAnnotation(handlerMethod.getBeanType(), RequestMapping.class);
+			if (parent != null) path = parent.value()[0] + (path.startsWith("/") ? "" : "/") + path;
+			return Config.shouldBeDocumented(path);
+		}
+		return true;
 	}
 
-	private Endpoint createEndpoint(HandlerMethod handlerMethod,
+
+
+    private Endpoint createEndpoint(HandlerMethod handlerMethod,
 			RequestMappingInfo requestMappingInfo, Javadoc api) {
 		Class<?> clazz = handlerMethod.getMethod().getDeclaringClass();
 
@@ -121,6 +134,10 @@ public class EndpointDiscoverer {
 
 		MethodDescriptor methodDescriptor = classDescriptor
 				.getMethodDescriptor(handlerMethod.getMethod());
+
+		if (methodDescriptor == null) {
+			throw new RuntimeException("Can't find method doc " + handlerMethod.getMethod());
+		}
 
 		List<Outcome> outcomes = getOutcomes(handlerMethod, methodDescriptor);
 

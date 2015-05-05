@@ -66,6 +66,14 @@ public class DocumentationGenerator {
 				if (returnTypeDescriptor != null) {
 					processClass(returnTypeDescriptor, responseClasses);
 				}
+                //warbaby 处理泛型
+                String genericType = methodDescriptor.getGenericType();
+                if(genericType!=null) {
+                    ClassDescriptor genericTypeDescriptor = this.javadoc.getClassDescriptor(genericType);
+                    if (genericTypeDescriptor != null) {
+                        processClass(genericTypeDescriptor, responseClasses);
+                    }
+                }
 			}
 		}
 	}

@@ -120,7 +120,12 @@ public final class JavadocProcessor {
 
         String type = getClassName(fieldDoc.type());
 
-        return new FieldDescriptor(fieldDoc.name(), type, summary, description);
+        ParameterizedType parameterizedType = fieldDoc.type().asParameterizedType();
+        String genericType = null;
+        if(parameterizedType!=null && parameterizedType.typeArguments().length>0)
+            genericType = getClassName(parameterizedType.typeArguments()[0]);
+
+        return new FieldDescriptor(fieldDoc.name(), type, genericType, summary, description);
     }
 
 	private String getClassName(Type type) {

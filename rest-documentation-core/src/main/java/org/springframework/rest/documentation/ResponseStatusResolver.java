@@ -22,7 +22,7 @@ import org.springframework.web.method.HandlerMethod;
 public interface ResponseStatusResolver {
 	
 	/**
-	 * Resolves the {@link ResponseStatus} that will be produced in the event of an
+	 * Resolves the {@link org.springframework.web.bind.annotation.ResponseStatus} that will be produced in the event of an
 	 * exception of the given {@code exceptionType} being thrown by the given
 	 * {@code handlerMethod}.
 	 * 

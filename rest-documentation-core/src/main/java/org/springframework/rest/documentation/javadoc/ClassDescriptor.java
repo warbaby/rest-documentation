@@ -89,11 +89,14 @@ public class ClassDescriptor {
 	}
 
 	private boolean isMatch(Class<?> type, ParameterDescriptor descriptor) {
+		String runningType;
 		if (type.isArray()) {
-			return type.getComponentType().getName().equals(descriptor.getType());
+			runningType = type.getComponentType().getName();
 		}
 		else {
-			return type.getName().equals(descriptor.getType());
+			runningType = type.getName();
 		}
+
+		return runningType.equals(descriptor.getType()) || runningType.endsWith("." + descriptor.getType());
 	}
 }

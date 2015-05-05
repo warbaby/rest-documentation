@@ -12,7 +12,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:0">
         <CLASSES>
-          <root url="jar://C:/opt/jdk170_64/lib/tools.jar!/" />
+          <root url="jar://D:/opt/jdk170/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -45,13 +45,13 @@ public class ExceptionHandlerResponseStatusResolver implements ResponseStatusRes
 			List<ControllerAdviceBean> controllerAdviceBeans = ControllerAdviceBean.findAnnotatedBeans(applicationContext);
 			for (int i = 0; i < controllerAdviceBeans.size() && responseStatus == null; i++) {
 				ControllerAdviceBean bean = controllerAdviceBeans.get(i);
-				if (bean.isApplicableToBeanType(handlerMethod.getMethod().getDeclaringClass())) {
+				//if (bean.isApplicableToBeanType(handlerMethod.getMethod().getDeclaringClass())) {
 					exceptionHandlerMethodResolver = new ExceptionHandlerMethodResolver(bean.getBeanType());
 					responseStatus = resolveResponseStatus(exceptionHandlerMethodResolver, exceptionClass);
 					if (responseStatus != null) {
 						break;
 					}
-				}
+				//}
 			}
 		}
 		return responseStatus;
