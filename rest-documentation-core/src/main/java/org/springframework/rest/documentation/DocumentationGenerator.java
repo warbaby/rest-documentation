@@ -75,6 +75,8 @@ public class DocumentationGenerator {
                     }
                 }
 			}
+
+            //用不用循环field?
 		}
 	}
 }

@@ -9,8 +9,10 @@ public class DocletTest {
         com.sun.tools.javadoc.Main.execute(new String[]{
               "-doclet", RestDoclet.class.getName(),
               //"-sourcepath", "rest-documentation-example/src/main/java",
-              "-sourcepath", "D:\\code\\YD-svn\\cyyd-1.0-java\\cyou-cyuc-core\\src\\main\\java",
+              "-sourcepath", "D:\\code\\YD-svn\\cyyd-1.0-java\\cyou-cyuc-core\\src\\main\\java;"
+              + "D:\\code\\YD-svn\\cyyd-1.0-java\\cyou-ucweb\\src\\main\\java",
               "-subpackages", "com.changyou",
+              "-subpackages", "com.cyyd",
               "-d", "rest-documentation-example/target/classes",
               "warbaby.test"
         });

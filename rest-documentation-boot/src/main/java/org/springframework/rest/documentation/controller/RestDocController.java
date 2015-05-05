@@ -206,7 +206,6 @@ public class RestDocController implements ApplicationContextAware {
 
                     //属性上的注释优先, 或者找不到getter或者javadoc里没有getter(lombok)
                     if ( fieldDescriptor!=null && ((fieldDescriptor.getSummary() != null && !fieldDescriptor.getSummary().isEmpty()) || methodDescriptor == null)) {
-                        //warbaby note TODO: 这里应该修改doclet生成field的genericType;
                         String genericType = fieldDescriptor.getGenericType();
                         if(genericType==null && methodDescriptor != null) genericType = methodDescriptor.getGenericType();
                         DocumentationSchema propertySchema = getPropertySchema(responseClasses, documentation, fieldDescriptor.getSummary(), fieldDescriptor.getDescription(), fieldDescriptor.getType(), genericType);
