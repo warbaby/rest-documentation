@@ -206,17 +206,11 @@ public class RestDocController implements ApplicationContextAware {
 
                     //属性上的注释优先, 或者找不到getter或者javadoc里没有getter(lombok)
                     if ( fieldDescriptor!=null && ((fieldDescriptor.getSummary() != null && !fieldDescriptor.getSummary().isEmpty()) || methodDescriptor == null)) {
-                        String genericType = fieldDescriptor.getGenericType();
-                        if(genericType==null && methodDescriptor != null) genericType = methodDescriptor.getGenericType();
-                        DocumentationSchema propertySchema = getPropertySchema(responseClasses, documentation, fieldDescriptor.getSummary(), fieldDescriptor.getDescription(), fieldDescriptor.getType(), genericType);
+                        DocumentationSchema propertySchema = getPropertySchema(responseClasses, documentation, fieldDescriptor.getSummary(), fieldDescriptor.getDescription(), fieldDescriptor.getType(), fieldDescriptor.getGenericType());
                         properties.put(propertyName, propertySchema);
-                    } else {
-                        if (methodDescriptor != null) {
-                            String propertyType = methodDescriptor.getReturnType();
-                            String genericType = methodDescriptor.getGenericType();
-                            DocumentationSchema propertySchema = getPropertySchema(responseClasses, documentation, methodDescriptor.getSummary(), methodDescriptor.getDescription(), propertyType, genericType);
-                            properties.put(propertyName, propertySchema);
-                        }
+                    } else if (methodDescriptor != null) {
+                        DocumentationSchema propertySchema = getPropertySchema(responseClasses, documentation, methodDescriptor.getSummary(), methodDescriptor.getDescription(), methodDescriptor.getReturnType(), methodDescriptor.getGenericType());
+                        properties.put(propertyName, propertySchema);
                     }
                 }
 
