@@ -93,12 +93,25 @@ public final class JavadocProcessor {
 			description = "";
 		}
 
-        ParameterizedType parameterizedType = methodDoc.returnType().asParameterizedType();
+        String type;
+        ParameterizedType parameterizedType;
         String genericType = null;
-        if(parameterizedType!=null && parameterizedType.typeArguments().length>0)
-            genericType = getClassName(parameterizedType.typeArguments()[0]);
 
-        return new MethodDescriptor(methodDoc.name(), getClassName(methodDoc.returnType()), summary, description, genericType, parameterDescriptors,
+        Type currType = methodDoc.returnType(); Type oldType = currType;
+        while( (parameterizedType = currType.asParameterizedType()) != null && parameterizedType.typeArguments().length > 0) {
+            currType = parameterizedType.typeArguments()[getClassName(currType).indexOf("Map") > 0 ? 1 : 0];
+        }
+
+        //如果用泛型替换了类型, 则类型只是一个名字, 没有用了
+        if(currType != oldType) {
+            genericType = getClassName(currType);
+            type = methodDoc.returnType().asParameterizedType().toString(); //java.util.Map<java.lang.String, java.lang.Object>
+            type = type.replaceAll("[a-zA-Z0-9_]+\\.", "");
+        } else {
+            type = getClassName(methodDoc.returnType());
+        }
+
+        return new MethodDescriptor(methodDoc.name(), type, summary, description, genericType, parameterDescriptors,
 				throwsDescriptors);
 	}
 
@@ -118,12 +131,23 @@ public final class JavadocProcessor {
             description = "";
         }
 
-        String type = getClassName(fieldDoc.type());
-
-        ParameterizedType parameterizedType = fieldDoc.type().asParameterizedType();
+        String type;
+        ParameterizedType parameterizedType;
         String genericType = null;
-        if(parameterizedType!=null && parameterizedType.typeArguments().length>0)
-            genericType = getClassName(parameterizedType.typeArguments()[0]);
+
+        Type currType = fieldDoc.type(); Type oldType = currType;
+        while( (parameterizedType = currType.asParameterizedType()) != null && parameterizedType.typeArguments().length > 0) {
+            currType = parameterizedType.typeArguments()[getClassName(currType).indexOf("Map") > 0 ? 1 : 0];
+        }
+
+        //如果用泛型替换了类型, 则类型只是一个名字, 没有用了
+        if(currType != oldType) {
+            genericType = getClassName(currType);
+            type = fieldDoc.type().asParameterizedType().toString(); //java.util.Map<java.lang.String, java.lang.Object>
+            type = type.replaceAll("[a-zA-Z0-9_]+\\.", "");
+        } else {
+            type = getClassName(fieldDoc.type());
+        }
 
         return new FieldDescriptor(fieldDoc.name(), type, genericType, summary, description);
     }

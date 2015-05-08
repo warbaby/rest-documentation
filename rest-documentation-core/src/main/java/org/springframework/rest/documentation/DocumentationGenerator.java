@@ -17,7 +17,6 @@
 package org.springframework.rest.documentation;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.rest.documentation.javadoc.ClassDescriptor;
+import org.springframework.rest.documentation.javadoc.FieldDescriptor;
 import org.springframework.rest.documentation.javadoc.Javadoc;
 import org.springframework.rest.documentation.javadoc.MethodDescriptor;
 import org.springframework.rest.documentation.model.Documentation;
@@ -76,7 +76,20 @@ public class DocumentationGenerator {
                 }
 			}
 
-            //用不用循环field?
+            //循环field
+            for (FieldDescriptor fieldDescriptor : classDescriptor.getFieldDescriptors()) {
+                ClassDescriptor typeDescriptor = this.javadoc.getClassDescriptor(fieldDescriptor.getType());
+                if (typeDescriptor != null) {
+                    processClass(typeDescriptor, responseClasses);
+                }
+                String genericType = fieldDescriptor.getGenericType();
+                if(genericType!=null) {
+                    ClassDescriptor genericTypeDescriptor = this.javadoc.getClassDescriptor(genericType);
+                    if (genericTypeDescriptor != null) {
+                        processClass(genericTypeDescriptor, responseClasses);
+                    }
+                }
+            }
 		}
 	}
 }
